@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea,
     QWidget, QPushButton, QFileDialog, QMessageBox, QGridLayout
 )
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QPixmap, QImage
 
 import os
 import shutil

@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QMessageBox, QHeaderView, QSizePolicy,
     QDialog, QRadioButton, QGroupBox, QComboBox, QDialogButtonBox, QAbstractItemView
 )
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 import os
 import sys
 

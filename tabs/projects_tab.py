@@ -1,10 +1,10 @@
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QTextEdit, QFormLayout, QDialog, QDialogButtonBox, QMessageBox,
     QDoubleSpinBox, QDateEdit, QComboBox, QListWidget, QListWidgetItem,
     QPushButton, QGroupBox, QRadioButton, QButtonGroup, QCheckBox, QSizePolicy
 )
-from PyQt5.QtCore import Qt, pyqtSignal, QDate
+from PyQt6.QtCore import Qt, pyqtSignal, QDate
 import sys
 import os
 
@@ -163,7 +163,7 @@ class ProjectDialog(QDialog):
         self.trouble_worker_combo.setEnabled(self.has_trouble_check.isChecked())
 
         self.has_trouble_check.stateChanged.connect(
-            lambda state: self.trouble_worker_combo.setEnabled(state == Qt.CheckState.Checked.value)
+            lambda state: self.trouble_worker_combo.setEnabled(state == Qt.CheckState.Checked)
         )
 
         trouble_layout.addWidget(QLabel("担当者:"))
@@ -357,8 +357,8 @@ class ProjectDialog(QDialog):
 
     def add_photo(self):
         """写真を追加する"""
-        from PyQt5.QtWidgets import QFileDialog
-        from PyQt5.QtCore import QDir
+        from PyQt6.QtWidgets import QFileDialog
+        from PyQt6.QtCore import QDir
         import shutil
         import os
 
@@ -426,9 +426,6 @@ class ProjectDialog(QDialog):
     def open_work_order(self):
         """業務指示書ダイアログを開く"""
         from dialogs.work_order_dialog import WorkOrderDialog
-        from tabs.work_orders_tab import WorkOrdersTab
-        # グローバル変数のmain_windowを参照するよう変更
-        import sys
 
         # DialogのインスタンスとProjectDataをセットして作成
         dialog = WorkOrderDialog(self.db, self.project_data, parent=self)
@@ -436,16 +433,13 @@ class ProjectDialog(QDialog):
 
         # ダイアログが閉じられた後、業務指示書が保存されている場合
         if hasattr(dialog, 'saved') and dialog.saved:
-            # メインウィンドウの業務指示書タブを探して更新する
-            from main_window import main_window
-            if main_window:
-                for i in range(main_window.tab_widget.count()):
-                    tab = main_window.tab_widget.widget(i)
-                    if isinstance(tab, WorkOrdersTab):
-                        tab.load_work_orders()
-                        # 必要に応じてデータ変更シグナルを発行
-                        tab.ordersChanged.emit()
-                        break
+            # 親ウィンドウ（メインウィンドウ）を取得して業務指示書タブを更新
+            main_window = self.window()
+            if hasattr(main_window, 'work_orders_tab'):
+                main_window.work_orders_tab.load_work_orders()
+                # 必要に応じてデータ変更シグナルを発行
+                if hasattr(main_window.work_orders_tab, 'ordersChanged'):
+                    main_window.work_orders_tab.ordersChanged.emit()
 
 
 class ProjectsTab(QWidget):

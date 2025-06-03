@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QTextEdit, QFormLayout, QDialog, QDialogButtonBox, QMessageBox
 )
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 
 from components import SearchBar, ActionBar, EnhancedTable, ConfirmDialog
 from styles import StyleManager

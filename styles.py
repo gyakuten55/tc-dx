@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QPushButton, QListWidget, QLineEdit, QTextEdit, QLabel, QComboBox, QCheckBox, QRadioButton, QDateEdit, QTabWidget
-from PyQt5.QtGui import QFont, QPalette, QColor, QIcon
-from PyQt5.QtCore import Qt, QSize
+from PyQt6.QtWidgets import QApplication, QPushButton, QListWidget, QLineEdit, QTextEdit, QLabel, QComboBox, QCheckBox, QRadioButton, QDateEdit, QTabWidget
+from PyQt6.QtGui import QFont, QPalette, QColor, QIcon
+from PyQt6.QtCore import Qt, QSize
 
 class StyleManager:
     """アプリケーションのスタイルを管理するクラス"""

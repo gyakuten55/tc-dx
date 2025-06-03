@@ -1,12 +1,12 @@
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
     QTabWidget, QGridLayout, QFormLayout, QSpinBox, QLineEdit,
     QDoubleSpinBox, QGroupBox, QFrame, QSplitter, QScrollArea,
     QPushButton, QSizePolicy, QRadioButton, QTableWidget, QTableWidgetItem,
     QHeaderView, QMessageBox
 )
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QPainter, QPen, QColor, QFont
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QPainter, QPen, QColor, QFont
 import matplotlib
 matplotlib.use('QtAgg')
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg

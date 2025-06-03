@@ -1,12 +1,12 @@
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QLineEdit, QTextEdit, QComboBox, QDateEdit, QTableWidget,
     QTableWidgetItem, QAbstractItemView, QHeaderView, QCheckBox,
     QDialog, QMessageBox, QGroupBox, QFormLayout, QSpinBox,
     QDialogButtonBox, QListWidget, QListWidgetItem, QSizePolicy
 )
-from PyQt5.QtCore import Qt, QDate, pyqtSignal
-from PyQt5.QtGui import QIcon, QFont, QPixmap
+from PyQt6.QtCore import Qt, QDate, pyqtSignal
+from PyQt6.QtGui import QIcon, QFont, QPixmap
 
 from styles import StyleManager
 
@@ -269,7 +269,7 @@ class DateRangeSelector(QWidget):
         # 日付選択
         self.from_date = QDateEdit()
         self.from_date.setCalendarPopup(True)
-        self.from_date.setDate(QDate.currentDate().addMonths(-1))
+        self.from_date.setDate(QDate.currentDate().addDays(-30))
         self.from_date.setFixedWidth(120)
         StyleManager.style_input(self.from_date)
 

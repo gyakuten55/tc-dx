@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer, QEventLoop

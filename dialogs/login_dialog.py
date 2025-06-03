@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QMessageBox, QFormLayout, QWidget
 )
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon, QPixmap
 
 from styles import StyleManager
 
