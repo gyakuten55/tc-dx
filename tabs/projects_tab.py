@@ -18,81 +18,6 @@ from components import (
 from styles import StyleManager
 
 
-class TroubleWorkerDialog(QDialog):
-    """トラブル作業員選択ダイアログ"""
-    
-    def __init__(self, db, parent=None, selected_worker_id=None):
-        super().__init__(parent)
-        
-        self.db = db
-        self.selected_worker_id = selected_worker_id
-        
-        self.setWindowTitle("トラブル担当者の選択")
-        self.setMinimumWidth(400)
-        self.setMinimumHeight(300)
-        
-        self.setup_ui()
-        self.load_workers()
-        
-    def setup_ui(self):
-        """UIをセットアップする"""
-        layout = QVBoxLayout()
-        
-        # 説明ラベル
-        info_label = QLabel("トラブルを起こした作業員を選択してください：")
-        StyleManager.set_value_font(info_label)
-        layout.addWidget(info_label)
-        
-        # 作業員リスト
-        self.workers_list = QListWidget()
-        self.workers_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        StyleManager.style_list(self.workers_list)
-        layout.addWidget(self.workers_list)
-        
-        # ボタン
-        button_box = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok |
-            QDialogButtonBox.StandardButton.Cancel
-        )
-        button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject)
-        
-        layout.addWidget(button_box)
-        self.setLayout(layout)
-        
-        # リストダブルクリックでOK
-        self.workers_list.itemDoubleClicked.connect(self.accept)
-    
-    def load_workers(self):
-        """作業員データをロードする"""
-        workers = self.db.get_workers()
-        
-        self.workers_list.clear()
-        for worker in workers:
-            item = QListWidgetItem(worker['name'])
-            item.setData(Qt.ItemDataRole.UserRole, worker['id'])
-            self.workers_list.addItem(item)
-            
-            # 既に選択されている作業員がある場合、それを選択状態にする
-            if self.selected_worker_id and worker['id'] == self.selected_worker_id:
-                item.setSelected(True)
-                self.workers_list.setCurrentItem(item)
-    
-    def get_selected_worker_id(self):
-        """選択された作業員IDを取得する"""
-        current_item = self.workers_list.currentItem()
-        if current_item:
-            return current_item.data(Qt.ItemDataRole.UserRole)
-        return None
-    
-    def get_selected_worker_name(self):
-        """選択された作業員名を取得する"""
-        current_item = self.workers_list.currentItem()
-        if current_item:
-            return current_item.text()
-        return None
-
-
 class ProjectDialog(QDialog):
     """案件データ編集ダイアログ"""
 
@@ -226,6 +151,9 @@ class ProjectDialog(QDialog):
 
         self.trouble_worker_combo = EnhancedComboBox()
         self.trouble_worker_combo.setEnabled(self.has_trouble_check.isChecked())
+        self.trouble_worker_combo.setMinimumWidth(120)  # 最小幅を設定
+
+        self.has_trouble_check.stateChanged.connect(self._on_trouble_check_changed)
 
         trouble_layout.addWidget(QLabel("担当者:"))
         trouble_layout.addWidget(self.trouble_worker_combo)
@@ -295,9 +223,6 @@ class ProjectDialog(QDialog):
         layout.addLayout(button_layout)
 
         self.setLayout(layout)
-        
-        # シグナル接続（初期化完了後に行う）
-        self.has_trouble_check.stateChanged.connect(self.on_trouble_check_changed)
 
     def load_master_data(self):
         """マスターデータをロードする"""
@@ -327,7 +252,14 @@ class ProjectDialog(QDialog):
             self.workers_list.addItem(item)
 
         # トラブル担当者選択用のデータをロード
-        self.trouble_worker_combo.set_items(workers)
+        # 「選択してください」オプションを追加
+        self.trouble_worker_combo.clear()
+        self.trouble_worker_combo.addItem("選択してください", None)
+        
+        # 作業員データを追加
+        for worker in workers:
+            self.trouble_worker_combo.addItem(worker['name'], worker['id'])
+        
         if self.is_edit_mode and self.project_data.get('trouble_worker_id'):
             self.trouble_worker_combo.set_selected_value(self.project_data.get('trouble_worker_id'))
 
@@ -346,6 +278,15 @@ class ProjectDialog(QDialog):
 
             if worker_id in project_worker_ids:
                 item.setCheckState(Qt.CheckState.Checked)
+
+    def _on_trouble_check_changed(self, state):
+        """トラブルチェックボックス状態変更時の処理"""
+        is_checked = state == Qt.CheckState.Checked
+        self.trouble_worker_combo.setEnabled(is_checked)
+        
+        # チェックされた時にコンボボックスにフォーカスを当てる
+        if is_checked:
+            self.trouble_worker_combo.setFocus()
 
     def update_price_from_service(self):
         """選択されたサービスに基づいて価格を設定"""
@@ -485,35 +426,6 @@ class ProjectDialog(QDialog):
 
         dialog = PhotoViewerDialog(self.db, project_id, parent=self)
         dialog.exec()
-
-    def on_trouble_check_changed(self, state):
-        """トラブルチェックボックスの状態変更時の処理"""
-        is_checked = state == Qt.CheckState.Checked
-        
-        if is_checked:
-            # トラブルありがチェックされた場合、作業員選択ダイアログを表示
-            current_worker_id = self.trouble_worker_combo.get_selected_value()
-            dialog = TroubleWorkerDialog(self.db, self, current_worker_id)
-            
-            if dialog.exec():
-                # 作業員が選択された場合
-                selected_worker_id = dialog.get_selected_worker_id()
-                if selected_worker_id:
-                    # コンボボックスに選択された作業員を設定
-                    self.trouble_worker_combo.set_selected_value(selected_worker_id)
-                    self.trouble_worker_combo.setEnabled(True)
-                else:
-                    # 作業員が選択されなかった場合、チェックを外す
-                    self.has_trouble_check.setChecked(False)
-                    self.trouble_worker_combo.setEnabled(False)
-            else:
-                # ダイアログがキャンセルされた場合、チェックを外す
-                self.has_trouble_check.setChecked(False)
-                self.trouble_worker_combo.setEnabled(False)
-        else:
-            # トラブルありのチェックが外された場合
-            self.trouble_worker_combo.setEnabled(False)
-            self.trouble_worker_combo.setCurrentIndex(0)  # 選択をクリア
 
     def open_work_order(self):
         """業務指示書ダイアログを開く"""
