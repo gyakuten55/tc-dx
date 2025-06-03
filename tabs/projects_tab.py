@@ -151,7 +151,6 @@ class ProjectDialog(QDialog):
 
         self.trouble_worker_combo = EnhancedComboBox()
         self.trouble_worker_combo.setEnabled(self.has_trouble_check.isChecked())
-        self.trouble_worker_combo.setMinimumWidth(120)  # 最小幅を設定
 
         self.has_trouble_check.stateChanged.connect(self._on_trouble_check_changed)
 
@@ -252,7 +251,7 @@ class ProjectDialog(QDialog):
             self.workers_list.addItem(item)
 
         # トラブル担当者選択用のデータをロード
-        # 「選択してください」オプションを追加
+        # まず空のオプションを追加
         self.trouble_worker_combo.clear()
         self.trouble_worker_combo.addItem("選択してください", None)
         
@@ -284,9 +283,9 @@ class ProjectDialog(QDialog):
         is_checked = state == Qt.CheckState.Checked
         self.trouble_worker_combo.setEnabled(is_checked)
         
-        # チェックされた時にコンボボックスにフォーカスを当てる
-        if is_checked:
-            self.trouble_worker_combo.setFocus()
+        # チェックが外れた場合、選択をリセット
+        if not is_checked:
+            self.trouble_worker_combo.setCurrentIndex(0)  # "選択してください"を選択
 
     def update_price_from_service(self):
         """選択されたサービスに基づいて価格を設定"""
@@ -348,9 +347,11 @@ class ProjectDialog(QDialog):
             QMessageBox.warning(self, "入力エラー", "価格は0より大きい値で入力してください。")
             return False
 
-        if self.has_trouble_check.isChecked() and not self.trouble_worker_combo.get_selected_value():
-            QMessageBox.warning(self, "入力エラー", "トラブル担当者を選択してください。")
-            return False
+        if self.has_trouble_check.isChecked():
+            trouble_worker_id = self.trouble_worker_combo.get_selected_value()
+            if not trouble_worker_id:
+                QMessageBox.warning(self, "入力エラー", "トラブルありをチェックした場合は、担当者を選択してください。")
+                return False
 
         return True
 
