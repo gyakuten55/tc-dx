@@ -259,8 +259,18 @@ class ProjectDialog(QDialog):
         for worker in workers:
             self.trouble_worker_combo.addItem(worker['name'], worker['id'])
         
+        # 編集モードでトラブルデータがある場合の処理
         if self.is_edit_mode and self.project_data.get('trouble_worker_id'):
-            self.trouble_worker_combo.set_selected_value(self.project_data.get('trouble_worker_id'))
+            # トラブルありの場合、プルダウンを有効化
+            if self.project_data.get('has_trouble') == 1:
+                self.trouble_worker_combo.setEnabled(True)
+            
+            # 担当者を選択
+            trouble_worker_id = self.project_data.get('trouble_worker_id')
+            for i in range(self.trouble_worker_combo.count()):
+                if self.trouble_worker_combo.itemData(i) == trouble_worker_id:
+                    self.trouble_worker_combo.setCurrentIndex(i)
+                    break
 
     def load_project_workers(self):
         """案件に関連する作業員データをロード"""
@@ -286,6 +296,14 @@ class ProjectDialog(QDialog):
         # チェックが外れた場合、選択をリセット
         if not is_checked:
             self.trouble_worker_combo.setCurrentIndex(0)  # "選択してください"を選択
+        else:
+            # チェックされた場合で、編集モードかつ既存のトラブル担当者がある場合は復元
+            if self.is_edit_mode and self.project_data.get('trouble_worker_id'):
+                trouble_worker_id = self.project_data.get('trouble_worker_id')
+                for i in range(self.trouble_worker_combo.count()):
+                    if self.trouble_worker_combo.itemData(i) == trouble_worker_id:
+                        self.trouble_worker_combo.setCurrentIndex(i)
+                        break
 
     def update_price_from_service(self):
         """選択されたサービスに基づいて価格を設定"""
