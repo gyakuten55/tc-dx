@@ -85,6 +85,13 @@ class WorkerDialog(QDialog):
             self.emergency_phone_input.setText(self.worker_data.get('emergency_phone', ''))
         form_layout.addRow("緊急連絡先（電話）:", self.emergency_phone_input)
 
+        # 緊急連絡先（住所）
+        self.emergency_address_input = QLineEdit()
+        StyleManager.style_input(self.emergency_address_input)
+        if self.is_edit_mode:
+            self.emergency_address_input.setText(self.worker_data.get('emergency_address', ''))
+        form_layout.addRow("緊急連絡先（住所）:", self.emergency_address_input)
+
         # 備考
         self.note_input = QTextEdit()
         StyleManager.style_input(self.note_input)
@@ -118,6 +125,7 @@ class WorkerDialog(QDialog):
             'blood_type': self.blood_type_input.text(),
             'emergency_contact': self.emergency_contact_input.text(),
             'emergency_phone': self.emergency_phone_input.text(),
+            'emergency_address': self.emergency_address_input.text(),
             'note': self.note_input.toPlainText()
         }
 
@@ -162,7 +170,7 @@ class WorkersTab(QWidget):
         layout.addWidget(self.action_bar)
 
         # テーブル
-        self.table = EnhancedTable(["ID", "作業員名", "住所", "電話番号", "血液型", "緊急連絡先", "備考"])
+        self.table = EnhancedTable(["ID", "作業員名", "住所", "電話番号", "血液型", "緊急連絡先", "緊急連絡先住所", "備考"])
         self.table.setColumnHidden(0, True)  # ID列を非表示
         layout.addWidget(self.table)
 
@@ -202,6 +210,7 @@ class WorkersTab(QWidget):
                 "電話番号": worker.get("phone", "") or "",
                 "血液型": worker.get("blood_type", "") or "",
                 "緊急連絡先": worker.get("emergency_contact", "") or "",
+                "緊急連絡先住所": worker.get("emergency_address", "") or "",
                 "備考": worker.get("note", "") or ""
             })
 

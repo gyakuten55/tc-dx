@@ -62,11 +62,19 @@ class Database:
             blood_type TEXT,
             emergency_contact TEXT,
             emergency_phone TEXT,
+            emergency_address TEXT,
             note TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         ''')
+        
+        # 既存のworkersテーブルに緊急連絡先住所フィールドを追加（存在しない場合のみ）
+        try:
+            self.cursor.execute('ALTER TABLE workers ADD COLUMN emergency_address TEXT')
+        except sqlite3.OperationalError:
+            # カラムが既に存在する場合は無視
+            pass
 
         # サービスマスターテーブル
         self.cursor.execute('''

@@ -78,17 +78,6 @@ class ProjectDialog(QDialog):
             self.price_input.setValue(float(self.project_data.get('price', 0)))
         form_layout.addRow("価格:", self.price_input)
 
-        # 人件費
-        self.labor_cost_input = QDoubleSpinBox()
-        self.labor_cost_input.setRange(0, 100000000)
-        self.labor_cost_input.setSingleStep(1000)
-        self.labor_cost_input.setPrefix("¥ ")
-        self.labor_cost_input.setGroupSeparatorShown(True)
-        StyleManager.style_input(self.labor_cost_input)
-        if self.is_edit_mode and self.project_data.get('labor_cost') is not None:
-            self.labor_cost_input.setValue(float(self.project_data.get('labor_cost', 0)))
-        form_layout.addRow("人件費:", self.labor_cost_input)
-
         # 作業期間
         date_layout = QHBoxLayout()
 
@@ -300,7 +289,6 @@ class ProjectDialog(QDialog):
             'service_id': self.service_combo.get_selected_value(),
             'site_address': self.site_address_input.text(),
             'price': self.price_input.value(),
-            'labor_cost': self.labor_cost_input.value(),
             'status': self.status_combo.currentText(),
             'start_date': self.start_date.date().toString("yyyy-MM-dd"),
             'end_date': self.end_date.date().toString("yyyy-MM-dd"),
