@@ -73,6 +73,7 @@ class ProjectDialog(QDialog):
         self.price_input.setSingleStep(1000)
         self.price_input.setPrefix("¥ ")
         self.price_input.setGroupSeparatorShown(True)
+        self.price_input.setDecimals(0)  # 小数点以下の桁数を0に設定
         StyleManager.style_input(self.price_input)
         if self.is_edit_mode and self.project_data.get('price') is not None:
             self.price_input.setValue(float(self.project_data.get('price', 0)))

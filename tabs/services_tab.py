@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QTextEdit, QFormLayout, QDialog, QDialogButtonBox, QMessageBox,
-    QDoubleSpinBox
+    QTextEdit, QFormLayout, QDialog, QDialogButtonBox, QMessageBox
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 

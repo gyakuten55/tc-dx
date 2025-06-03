@@ -447,6 +447,12 @@ class YearlyComparisonWidget(QWidget):
 
         # グラフのスタイル設定
         ax.set_title(f'{current_year}年度 vs {compare_year}年度 売上比較(月別・累計)', fontsize=14, fontweight='bold')
+        
+        # Y軸の金額フォーマットを整数に設定
+        from matplotlib.ticker import FuncFormatter
+        def currency_formatter(x, pos):
+            return f'¥{int(x):,}'
+        ax.yaxis.set_major_formatter(FuncFormatter(currency_formatter))
         ax.set_xlabel('月', fontsize=12)
         ax.set_ylabel('売上金額(円)', fontsize=12)
         ax.set_xticks(x)
@@ -625,6 +631,7 @@ class SalesTargetWidget(QWidget):
         self.annual_target_input.setSingleStep(1000000)
         self.annual_target_input.setSuffix("円")
         self.annual_target_input.setGroupSeparatorShown(True)
+        self.annual_target_input.setDecimals(0)  # 小数点以下の桁数を0に設定
         self.annual_target_input.setValue(0)
         StyleManager.style_input(self.annual_target_input)
 
@@ -662,6 +669,7 @@ class SalesTargetWidget(QWidget):
             target_spinbox.setSingleStep(100000)
             target_spinbox.setSuffix("円")
             target_spinbox.setGroupSeparatorShown(True)
+            target_spinbox.setDecimals(0)  # 小数点以下の桁数を0に設定
             target_spinbox.setValue(0)
             StyleManager.style_input(target_spinbox)
             self.monthly_table.setCellWidget(row, 1, target_spinbox)
